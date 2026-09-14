@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Take home assessement for FloQast company. TypeScript + Playwright",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "mock:server": "node mock-server/server.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/StaishaV/FloQast-assessement.git"
@@ -16,14 +18,16 @@
     "url": "https://github.com/StaishaV/FloQast-assessement/issues"
   },
   "homepage": "https://github.com/StaishaV/FloQast-assessement#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  },
   "devDependencies": {
     "@faker-js/faker": "^10.6.0",
     "@playwright/test": "^1.63.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.5.1",
-    "concurrently": "^10.0.5",
-    "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "concurrently": "^10.0.5"
   }
 }
