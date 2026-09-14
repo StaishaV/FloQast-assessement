@@ -1,3 +1,4 @@
+// Local env data
 
 export default {
   baseURL: 'http://localhost:4000',

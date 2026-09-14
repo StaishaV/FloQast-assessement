@@ -1,5 +1,7 @@
 import { expect as baseExpect } from '@playwright/test';
 
+// Creates a custom assertion for error validation
+
 export const expect = baseExpect.extend({
     async toBeValidationError(response, expectedFieldHint: string) {
         const body = await response.json();

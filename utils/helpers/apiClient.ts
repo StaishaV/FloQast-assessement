@@ -1,5 +1,7 @@
 import { APIRequestContext } from '@playwright/test';
 
+// API Client wrapper - dedup for API calls
+
 export class ApiClient {
   constructor(private request: APIRequestContext, private baseURL: string) {}
 
