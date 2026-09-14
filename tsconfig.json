@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "node16",
+    "module": "preserve",
     "lib": ["ES2022", "DOM"],
-    "moduleResolution": "node16",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "types": ["node"],
