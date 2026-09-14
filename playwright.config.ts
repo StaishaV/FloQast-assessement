@@ -1,4 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
+import local from './config/environments/local';
+import staging from './config/environments/staging';
+
+const environments = { local, staging };
+const env = environments[process.env.TEST_ENV as keyof typeof environments] ?? local;
 
 /**
  * Read environment variables from file.
@@ -27,6 +32,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
+    baseURL: env.baseURL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -70,10 +76,10 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  /* Start the mock backend + frontend before tests run, and wait until it's healthy */
+  webServer: {
+    command: 'npm run mock:server',
+    url: 'http://localhost:4000/health',
+    reuseExistingServer: !process.env.CI,
+  },
 });
