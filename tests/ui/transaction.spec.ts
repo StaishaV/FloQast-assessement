@@ -20,6 +20,23 @@ test.describe('Transaction creation flow', () => {
         await transactionPage.sendTransaction({ recipientId: recipient.id, amount: 42.5, type: 'transfer' });
 
         await expect(transactionPage.successMessage).toBeVisible();
+        await expect(transactionPage.transactionList.getByTestId('transaction-item')).toBeVisible();
+    });
+
+    test('shows an error for a negative amount', async ({ page, request, baseURL }) => {
+        const api = new ApiClient(request, baseURL!);
+        const recipientRes = await api.createUser(buildUser());
+        const recipient = await recipientRes.json();
+
+        const registrationPage = new RegistrationPage(page);
+        await registrationPage.goto();
+        await registrationPage.register(buildUser());
+
+        const transactionPage = new TransactionPage(page);
+        await transactionPage.sendTransaction({ recipientId: recipient.id, amount: -5, type: 'transfer' });
+
+        await expect(transactionPage.errorMessage).toBeVisible();
+        await expect(transactionPage.errorMessage).toContainText('amount');
     });
 
     test('shows an error when sending to a nonexistent recipient', async ({ page }) => {

@@ -86,6 +86,19 @@ test.describe('POST /api/transactions', () => {
 
         expect(secondBody.id).toBe(firstBody.id);
     });
+
+    test('handles concurrent transactions without corrupting data', async ({ api }) => {
+        const requests = Array.from({ length: 5 }, () =>
+            api.createTransaction(buildTransaction({ userId, recipientId }), userId)
+        );
+        const responses = await Promise.all(requests);
+
+        responses.forEach((response) => expect(response.status()).toBe(201));
+
+        const historyRes = await api.getTransactions(userId, userId);
+        const history = await historyRes.json();
+        expect(history.length).toBe(5); // all 5 recorded, none lost or duplicated
+    });
 });
 
 test.describe('GET /api/transactions/:userId', () => {
@@ -122,6 +135,24 @@ test.describe('GET /api/transactions/:userId', () => {
 
         const body = await response.json();
         expect(body[0]).toHaveProperty('direction');
-        expect(body[0].direction).toBe('received'); 
+        expect(body[0].direction).toBe('received');
+    });
+});
+
+test.describe('GET /api/transactions/:userId - edge cases', () => {
+    test('returns an empty array for a user with no transactions', async ({ api }) => {
+        const userRes = await api.createUser(buildUser());
+        const user = await userRes.json();
+
+        const response = await api.getTransactions(user.id, user.id);
+        expect(response.status()).toBe(200);
+
+        const body = await response.json();
+        expect(body).toEqual([]);
+    });
+
+    test('returns 404 for a userId that does not exist', async ({ api }) => {
+        const response = await api.getTransactions('fake-id-123', 'fake-id-123');
+        expect(response.status()).toBe(404);
     });
 });
